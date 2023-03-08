@@ -1,0 +1,2 @@
+[sqlfluff]
+ilham_plugin = ilham_plugin.rules

@@ -1,8 +1,9 @@
 """Setup file for an example rules plugin."""
+
 from setuptools import find_packages, setup
 
-PLUGIN_LOGICAL_NAME = "examples"
-PLUGIN_ROOT_MODULE = "examples"
+PLUGIN_LOGICAL_NAME = "ilham_plugin"
+PLUGIN_ROOT_MODULE = "ilham_plugin"
 
 setup(
     name=f"sqlfluff-plugin-{PLUGIN_LOGICAL_NAME}",
