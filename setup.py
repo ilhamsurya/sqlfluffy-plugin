@@ -1,8 +1,8 @@
 """Setup file for an example rules plugin."""
 from setuptools import find_packages, setup
 
-PLUGIN_LOGICAL_NAME = "mysql-schema-design"
-PLUGIN_ROOT_MODULE = "mysql-schema-design"
+PLUGIN_LOGICAL_NAME = "examples"
+PLUGIN_ROOT_MODULE = "examples"
 
 setup(
     name=f"sqlfluff-plugin-{PLUGIN_LOGICAL_NAME}",

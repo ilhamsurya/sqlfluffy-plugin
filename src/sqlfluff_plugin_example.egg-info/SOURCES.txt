@@ -1,0 +1,12 @@
+MANIFEST.in
+README.md
+setup.py
+src/example/__init__.py
+src/example/plugin_default_config.cfg
+src/example/rules.py
+src/sqlfluff_plugin_example.egg-info/PKG-INFO
+src/sqlfluff_plugin_example.egg-info/SOURCES.txt
+src/sqlfluff_plugin_example.egg-info/dependency_links.txt
+src/sqlfluff_plugin_example.egg-info/entry_points.txt
+src/sqlfluff_plugin_example.egg-info/requires.txt
+src/sqlfluff_plugin_example.egg-info/top_level.txt
