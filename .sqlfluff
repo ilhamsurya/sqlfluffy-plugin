@@ -1,20 +1,7 @@
-# SQLFluff custom plugin
-
-## How to start using SQLFluff with custom plugin
-
-1. Install sqlfluff `pip install sqlfluff`
-2. Install relevant [dbt adapter](https://docs.getdbt.com/docs/available-adapters) for your database/data warehouse e.g. `pip install dbt-postgres`
-3. Install custom plugin `pip install git+https://github.com/arnoldasjan/sqlfluff-plugin-customfm`
-
-In the root of your dbt project:
-
-5. Create `.sqlfluff` file for rules configurations.
-
-```
 [sqlfluff]
 verbose = 2
 templater = dbt
-dialect = postgres
+dialect = mysql
 
 [sqlfluff:rules]
 max_line_length = 140
@@ -43,21 +30,3 @@ capitalisation_policy = lower
 
 [sqlfluff:rules:L014]
 extended_capitalisation_policy = lower
-```
-
-6. Create `.sqlfluffignore` file to ignore specific folders to avoid linting for them.
-
-Inside `.sqlfluffignore` usually these folders are excluded:
-
-```
-target/
-# dbt <1.0.0
-dbt_modules/
-# dbt >=1.0.0
-dbt_packages/
-macros/
-```
-
-After this to start using sqlfluff run these commands:
-
-`sqlfluff lint path_to_file_or_folder` and `sqlfluff fix path_to_file_or_folder`
