@@ -13,12 +13,12 @@ from sqlfluff.core.rules.crawlers import SegmentSeekerCrawler
 from typing import List, Type
 import os.path
 from sqlfluff.core.config import ConfigLoader
-
+from sqlfluff.core.parser import WhitespaceSegment
 
 @hookimpl
 def get_rules() -> List[Type[BaseRule]]:
     """Get plugin rules."""
-    return [Rule_Example_L001]
+    return [Policy_Group_1]
 
 
 @hookimpl
@@ -87,3 +87,35 @@ class Rule_Example_L001(BaseRule):
                     anchor=seg,
                     description=f"Column `{col_name}` not allowed in ORDER BY.",
                 )
+            
+class Policy_Group_1(BaseRule):
+    config_keywords = ["valid_data_types"]
+    has_configured_cols = False
+    has_configured_data_types = False
+
+    def __init__(self, *args, **kwargs):
+        """Overwrite __init__ to set config."""
+        super().__init__(*args, **kwargs)
+
+    def _eval(self, context: RuleContext):
+        """Check if a column's data type is valid."""
+        if not self.has_configured_cols:
+            self.columns = self.get_config("cols_to_check")
+            self.has_configured_cols = True
+        if not self.has_configured_data_types:
+            self.valid_data_types = self.get_config("valid_data_types")
+            self.has_configured_data_types = True
+        for node in context.tree.traverse():
+            if node.type == "column_definition":
+                for segment in node.segments:
+                    if segment.is_type(WhitespaceSegment):
+                        continue
+                    if segment.raw.lower() in self.columns:
+                        if segment.next_raw.lower() not in self.valid_data_types:
+                            return LintResult(
+                                anchor=segment,
+                                description=f"Invalid data type '{segment.next_raw}' used for column '{segment.raw}'."
+                            )
+        return None
+    
+    

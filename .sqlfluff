@@ -1,6 +1,5 @@
 [sqlfluff]
 verbose = 2
-templater = dbt
 dialect = mysql
 
 [sqlfluff:rules]
