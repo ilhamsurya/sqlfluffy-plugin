@@ -18,7 +18,7 @@ from sqlfluff.core.parser import WhitespaceSegment
 @hookimpl
 def get_rules() -> List[Type[BaseRule]]:
     """Get plugin rules."""
-    return [Policy_Group_1]
+    return [Rule_Policy_Group_L001, Rule_Policy_Group_L002]
 
 
 @hookimpl
@@ -40,7 +40,7 @@ def get_configs_info() -> dict:
 
 # These two decorators allow plugins
 # to be displayed in the sqlfluff docs
-class Rule_Example_L001(BaseRule):
+class Rule_Policy_Group_L001(BaseRule):
     """ORDER BY on these columns is forbidden!
 
     **Anti-pattern**
@@ -88,7 +88,7 @@ class Rule_Example_L001(BaseRule):
                     description=f"Column `{col_name}` not allowed in ORDER BY.",
                 )
             
-class Policy_Group_1(BaseRule):
+class Rule_Policy_Group_L002(BaseRule):
     config_keywords = ["valid_data_types"]
     has_configured_cols = False
     has_configured_data_types = False
