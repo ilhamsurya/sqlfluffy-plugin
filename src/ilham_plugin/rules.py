@@ -41,34 +41,9 @@ def get_configs_info() -> dict:
 # These two decorators allow plugins
 # to be displayed in the sqlfluff docs
 class Rule_PolicyGroup_L001(BaseRule):
-    """ORDER BY on these columns is forbidden!
-
-    **Anti-pattern**
-
-    Using ``ORDER BY`` one some forbidden columns.
-
-    .. code-block:: sql
-
-        SELECT *
-        FROM foo
-        ORDER BY
-            bar,
-            baz
-
-    **Best practice**
-
-    Do not order by these columns.
-
-    .. code-block:: sql
-
-        SELECT *
-        FROM foo
-        ORDER BY bar
-    """
-
     groups = ("all",)
     config_keywords = ["forbidden_columns"]
-    crawl_behaviour = SegmentSeekerCrawler({"orderby_clause"})
+    crawl_behaviour = SegmentSeekerCrawler({"json"})
     is_fix_compatible = True
 
     def __init__(self, *args, **kwargs):
