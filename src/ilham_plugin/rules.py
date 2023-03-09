@@ -41,6 +41,31 @@ def get_configs_info() -> dict:
 # These two decorators allow plugins
 # to be displayed in the sqlfluff docs
 class Rule_PolicyGroup_L001(BaseRule):
+    """ORDER BY on these columns is forbidden!
+
+    **Anti-pattern**
+
+    Using ``ORDER BY`` one some forbidden columns.
+
+    .. code-block:: sql
+
+        SELECT *
+        FROM foo
+        ORDER BY
+            bar,
+            baz
+
+    **Best practice**
+
+    Do not order by these columns.
+
+    .. code-block:: sql
+
+        SELECT *
+        FROM foo
+        ORDER BY bar
+    """
+
     groups = ("all",)
     config_keywords = ["forbidden_columns"]
     crawl_behaviour = SegmentSeekerCrawler({"orderby_clause"})
@@ -57,41 +82,40 @@ class Rule_PolicyGroup_L001(BaseRule):
         """We should not ORDER BY forbidden_columns."""
         for seg in context.segment.segments:
             col_name = seg.raw.lower()
-            print(seg)
             if col_name in self.forbidden_columns:
-                print(col_name)
                 return LintResult(
                     anchor=seg,
                     description=f"Column `{col_name}` not allowed in ORDER BY.",
                 )
             
 class Rule_PolicyGroup_L002(BaseRule):
-    config_keywords = ["data_type_checks"]
-    has_configured_checks = False
+    config_keywords = ["valid_data_types"]
+    has_configured_cols = False
+    has_configured_data_types = False
 
     def __init__(self, *args, **kwargs):
         """Overwrite __init__ to set config."""
         super().__init__(*args, **kwargs)
-        self.config_keywords = [
-            check.strip() for check in self.config_keywords.split(",")
-        ]
 
     def _eval(self, context: RuleContext):
-        """Check if a column's data type matches certain criteria."""
-        if not self.has_configured_checks:
-            self.data_type_checks = self.get_config("data_type_checks")
-            self.has_configured_checks = True
+        """Check if a column's data type is valid."""
+        if not self.has_configured_cols:
+            self.columns = self.get_config("cols_to_check")
+            self.has_configured_cols = True
+        if not self.has_configured_data_types:
+            self.valid_data_types = self.get_config("valid_data_types")
+            self.has_configured_data_types = True
         for node in context.tree.traverse():
             if node.type == "column_definition":
                 for segment in node.segments:
                     if segment.is_type(WhitespaceSegment):
                         continue
-                    column_name = segment.raw.lower()
-                    data_type = segment.next_raw.lower()
-                    for check in self.data_type_checks:
-                        if column_name in check["columns"] and data_type not in check["valid_data_types"]:
+                    if segment.raw.lower() in self.columns:
+                        if segment.next_raw.lower() not in self.valid_data_types:
                             return LintResult(
                                 anchor=segment,
-                                description=f"Invalid data type '{data_type}' used for column '{column_name}'. {check['message']}"
+                                description=f"Invalid data type '{segment.next_raw}' used for column '{segment.raw}'."
                             )
         return None
+    
+    
