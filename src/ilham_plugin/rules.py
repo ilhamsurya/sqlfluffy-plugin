@@ -43,7 +43,7 @@ def get_configs_info() -> dict:
 class Rule_PolicyGroup_L001(BaseRule):
     groups = ("all",)
     config_keywords = ["forbidden_columns"]
-    crawl_behaviour = SegmentSeekerCrawler({"json"})
+    crawl_behaviour = SegmentSeekerCrawler({"orderby_clause"})
     is_fix_compatible = True
 
     def __init__(self, *args, **kwargs):
