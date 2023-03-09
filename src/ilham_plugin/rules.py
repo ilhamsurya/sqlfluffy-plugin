@@ -18,7 +18,7 @@ from sqlfluff.core.parser import WhitespaceSegment
 @hookimpl
 def get_rules() -> List[Type[BaseRule]]:
     """Get plugin rules."""
-    return [Rule_PolicyGroup_L001]
+    return [Rule_PolicyGroup_L001, Rule_PolicyGroup_L002]
 
 
 @hookimpl
