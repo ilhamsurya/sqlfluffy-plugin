@@ -91,33 +91,32 @@ class Rule_PolicyGroup_L001(BaseRule):
                 )
             
 class Rule_PolicyGroup_L002(BaseRule):
-    config_keywords = ["valid_data_types"]
-    has_configured_cols = False
-    has_configured_data_types = False
+    config_keywords = ["data_type_checks"]
+    has_configured_checks = False
 
     def __init__(self, *args, **kwargs):
         """Overwrite __init__ to set config."""
         super().__init__(*args, **kwargs)
+        self.config_keywords = [
+            check.strip() for check in self.config_keywords.split(",")
+        ]
 
     def _eval(self, context: RuleContext):
-        """Check if a column's data type is valid."""
-        if not self.has_configured_cols:
-            self.columns = self.get_config("cols_to_check")
-            self.has_configured_cols = True
-        if not self.has_configured_data_types:
-            self.valid_data_types = self.get_config("valid_data_types")
-            self.has_configured_data_types = True
+        """Check if a column's data type matches certain criteria."""
+        if not self.has_configured_checks:
+            self.data_type_checks = self.get_config("data_type_checks")
+            self.has_configured_checks = True
         for node in context.tree.traverse():
             if node.type == "column_definition":
                 for segment in node.segments:
                     if segment.is_type(WhitespaceSegment):
                         continue
-                    if segment.raw.lower() in self.columns:
-                        if segment.next_raw.lower() not in self.valid_data_types:
+                    column_name = segment.raw.lower()
+                    data_type = segment.next_raw.lower()
+                    for check in self.data_type_checks:
+                        if column_name in check["columns"] and data_type not in check["valid_data_types"]:
                             return LintResult(
                                 anchor=segment,
-                                description=f"Invalid data type '{segment.next_raw}' used for column '{segment.raw}'."
+                                description=f"Invalid data type '{data_type}' used for column '{column_name}'. {check['message']}"
                             )
         return None
-    
-    
