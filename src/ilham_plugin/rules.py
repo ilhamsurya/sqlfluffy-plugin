@@ -68,7 +68,7 @@ class Rule_PolicyGroup_L001(BaseRule):
 
     groups = ("all",)
     config_keywords = ["forbidden_columns"]
-    crawl_behaviour = SegmentSeekerCrawler({"orderby_clause"})
+    crawl_behaviour = SegmentSeekerCrawler({"json"})
     is_fix_compatible = True
 
     def __init__(self, *args, **kwargs):
