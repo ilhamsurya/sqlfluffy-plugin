@@ -82,7 +82,9 @@ class Rule_PolicyGroup_L001(BaseRule):
         """We should not ORDER BY forbidden_columns."""
         for seg in context.segment.segments:
             col_name = seg.raw.lower()
+            print(seg)
             if col_name in self.forbidden_columns:
+                print(col_name)
                 return LintResult(
                     anchor=seg,
                     description=f"Column `{col_name}` not allowed in ORDER BY.",
